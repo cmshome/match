@@ -1,0 +1,53 @@
+plugins {
+    id "org.ajoberstar.grgit" version "4.0.1"
+}
+
+group = 'com.lxk'
+version = '0.0.1-release'
+def artifactId = "match"
+
+apply plugin: 'java'
+
+sourceCompatibility = '1.8'
+
+//做全局配置
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'java'
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        mavenCentral()
+    }
+}
+
+
+
+dependencies {
+
+    compile("org.apache.lucene:lucene-core:6.6.1")
+    compile("org.apache.lucene:lucene-queryparser:6.6.1")
+    compile("org.apache.lucene:lucene-analyzers-common:6.6.1")
+    compile("commons-beanutils:commons-beanutils:1.9.3")
+
+    compile group: 'com.google.guava', name: 'guava', version:'18.0'
+
+
+
+    testCompile group: 'com.alibaba', name: 'fastjson', version:'1.2.72'
+    testCompile("junit:junit:4.12")
+
+}
+
+task fatJar(type: Jar) {
+    baseName = 'match'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
